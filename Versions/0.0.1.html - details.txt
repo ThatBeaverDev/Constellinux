@@ -1,4 +1,4 @@
-- The First Version of ConstellinuxR
+- The First Version of Constellinux.
 - Released 29/5/2024
 
 Additions:
