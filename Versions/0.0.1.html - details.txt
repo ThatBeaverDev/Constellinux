@@ -1,4 +1,5 @@
-The First Version of Constellinux - Released 29/5/2024
+- The First Version of Constellinux.
+- Released 29/5/2024
 
 Additions:
 - Terminal
