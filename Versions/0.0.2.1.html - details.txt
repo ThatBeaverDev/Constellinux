@@ -1,0 +1,3 @@
+- Released 9/6/2024
+
+Fixed a Critical Bug Causing the Drive to not boot. now you get an error!
