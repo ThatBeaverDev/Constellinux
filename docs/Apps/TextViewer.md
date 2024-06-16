@@ -1,0 +1,1 @@
+[[TextViewer]] is currently just a shell, only really usable via [[Files]]. To Use it, you need to open a .txt, .sh, .co or .md file from files (by clicking it). [[TextViewer]] will be blank otherwise if you don't do thid first. [[TextViewer]] is also unable to modify text files at this time.
