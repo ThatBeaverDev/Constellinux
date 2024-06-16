@@ -11,6 +11,6 @@ To report a security issue, please use the GitHub Security Advisory ["Report a 
 
 I will send a response indicating the next steps in handling your report. After the initial reply to your report, I'll keep you informed of the progress towards a fix and full announcement, and may ask for additional information or guidance.
 
-Also, If you wish , you may pull request ```Vunerability-Finders.md``` and add your GitHub username.
+Also, If you wish , you may pull request ```contributors.md``` and add your GitHub username.
 
 *Note: Security Patches may apply directly to the deployed version (no ##.##.##.1 or anything.*
