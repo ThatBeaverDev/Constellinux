@@ -1,4 +1,4 @@
-![[Repo-Banner.png]]
+![Repo-Banner](https://github.com/ThatBeaverDev/Constellinux/blob/main/Repo-Banner.png?raw=true)
 # The Constellinux Project
 Constellinux is a Web-Based Operating System, ran using the CRL Programming Language.
 
