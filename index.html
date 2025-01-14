@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+        <style>
+            p,h1 {
+                color: white;
+                font-family: "Source Code Pro", serif;
+                font-optical-sizing: auto;
+                font-weight: 450;
+                font-style: normal;
+                line-height: 0;
+            }
+
+            #log {
+                color: white;
+            }
+
+            #warn {
+                color: orange;
+            }
+
+            #error {
+                color: red;
+            }
+
+            #inputBox {
+                position: absolute;
+                background-color: white;
+                bottom: 0;
+                width: 100%;
+                height: auto;
+            }
+        </style>
+    </head>
+    <body style="background-color:black;">
+        <p id="inputBox"></p>
+    </body>
+<script id="kernel.js" src="./kernel.js"></script>
+</html>
