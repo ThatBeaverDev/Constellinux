@@ -271,7 +271,11 @@ async function kernel() {
 		}
 
 		system.log("Starting systemC...")
-		system.startProcess("systemC", "/usr/bin/systemc/systemc.js").then()
+		system.startProcess("systemC", "/usr/bin/systemc/systemC.js").then()
+		if (!system.systemC) {
+			system.error("systemC not running.")
+			return
+		}
 		system.log("Beginning to run processes...")
 
 		system.input = document.getElementById('inputBox');

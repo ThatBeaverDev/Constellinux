@@ -1,6 +1,8 @@
 // systemC
 
 function init() {
+    system.log("SystemC Found and Running.", "systemC")
+    system.systemC = true
     var config = system.files.get("/etc/systemc.json")
     if (config === undefined) {
         system.log("no systemC config file found. creating one.","systemC")
