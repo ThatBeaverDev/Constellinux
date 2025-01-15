@@ -17,6 +17,9 @@ function init() {
     for (const i in services) {
         system.startProcess(services[i], services[i])
     }
+
+    //system.gui.newWindow(PID)
+    //system.gui.windowInnerText(PID, "<p>hello from systemC!</p>")
 }
 
 function frame() {

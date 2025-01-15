@@ -11,7 +11,7 @@
       "/bin/echo.js",
       "/bin/useradd.js",
       "/bin/js.js",
-      "/usr/bin/systemc/systemc.js",
+      "/usr/bin/systemc/systemC.js",
       "/usr/bin/crl/crl.js",
       "/usr/bin/desktopEnv/desktopEnv.js"
     ],

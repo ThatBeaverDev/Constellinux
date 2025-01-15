@@ -4,7 +4,7 @@
 // you will have to define system.gui yourself.
 // good look, competition
 
-function init(args) {
+function init() {
     // Code to make windows draggable
     
     function dragElement(elmnt) {
@@ -80,5 +80,4 @@ function init(args) {
 }
 
 function frame() {
-
 }
