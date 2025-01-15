@@ -7,6 +7,7 @@ async function kernel() {
 	system.dir = "/"
 
 	system.inputText = ""
+	system.logsBox = document.getElementById("logsBox")
 	logHTML = document.getElementById("termLOG")
 	logsHTML = document.getElementById("logs")
 	system.log = function log(str, origin) {
@@ -34,10 +35,9 @@ async function kernel() {
                 element.innerText = text[line]
             }
 			console.log(element.innerText)
-			document.body.appendChild(element)
+			system.logsBox.appendChild(element)
 		}
 	}
-
 	system.post = function post(str, origin) {
 		let text = str
 		if (typeof text !== "string") {
@@ -59,7 +59,7 @@ async function kernel() {
 			element.id = "log"
 			element.innerText = text[line]
 			console.log(element.innerText)
-			document.body.appendChild(element)
+			system.logsBox.appendChild(element)
 		}
 	}
 
@@ -72,7 +72,7 @@ async function kernel() {
 		element.id = "warn"
 		element.innerText = "[" + Date.now() + "] - " + (origin || Name) + ": " + text;
 		console.error(element.innerText)
-		document.body.appendChild(element)
+		system.logsBox.appendChild(element)
 	}
 	system.error = function log(str, origin) {
 		let text = str
@@ -83,23 +83,46 @@ async function kernel() {
 		element.id = "error"
 		element.innerText = "[" + Date.now() + "] - " + (origin || Name) + ": " + text;
 		console.error(element.innerText)
-		document.body.appendChild(element)
+		system.logsBox.appendChild(element)
 	}
 
+	system.fetchURL = async function fetchURL(url) {
+		const response = await fetch(url);
+		const data = await response.text();
+		return data;
+	}
+
+
 	try {
+		system.post(String(" _____              _                             _   __                          _ \n/  __ \\            | |                           | | / /                         | |\n| /  \\/  __ _  ___ | |_  ___   _ __  ___   __ _  | |/ /   ___  _ __  _ __    ___ | |\n| |     / _` |/ __|| __|/ _ \\ | '__|/ _ \\ / _` | |    \\  / _ \\| '__|| '_ \\  / _ \\| |\n| \\__/\\| (_| |\\__ \\| |_| (_) || |  |  __/| (_| | | |\\  \\|  __/| |   | | | ||  __/| |\n \\____/ \\__,_||___/ \\__|\\___/ |_|   \\___| \\__,_| \\_| \\_/ \\___||_|   |_| |_| \\___||_|"))
+		system.post(" ")
+
 		system.log("Starting JS Engine...")
 
-		system.fetchURL = async function fetchURL(url) {
-			const response = await fetch(url);
-			const data = await response.text();
-			return data;
-		}
 		system.startProcess = async function(name, dir, args) {
+			if (system.files.get(dir) == undefined) {
+				return
+			}
 			system.preScript = "const PID = " + system.procCount + ";\n"
 			system.preScript += "const Name = '" + name + "';\n"
 			system.preScript += "const args = JSON.parse('" + JSON.stringify((args || [])) + "');\n"
 			let obj = {}
-			obj.code = system.preScript + system.files.get(dir)
+			let code
+			let type = String(dir).substring(String(dir).indexOf(".") + 1)
+			switch(type) {
+				case "js":
+					code = system.files.get(dir)
+					break;
+				case "crl":
+					if (system.crl !== undefined) {
+						code = system.crl.compile(system.files.get(dir))
+					} else {
+						system.error("CRL system not initialised")
+					}
+					break;
+			}
+			code = system.preScript + code
+			obj.code = code
 			obj.args = args
 			obj.PID = system.procCount
 			obj.name = name
@@ -110,6 +133,14 @@ async function kernel() {
 		}
 		system.stopProcess = function stopProcess(PID) {
 			delete system.processes[PID]
+		}
+
+		system.toDir = function toDir(dir) {
+			if (dir[0] == "/") {
+				return(dir)
+			} else {
+				return(system.dir + "/" + dir)
+			}
 		}
 
 
@@ -225,24 +256,22 @@ async function kernel() {
 		}
 
 		system.log("Creating Basic Directories...")
-		system.folders.writeFolder("/home")
-		system.folders.writeFolder("/bin")
-		let list = await system.fetchURL("./bin/index.json")
-		list = JSON.parse(list)
-		for (const item in list) {
-			obj = await system.fetchURL("./bin/" + list[item])
-			system.files.writeFile("/bin/" + list[item], obj)
+
+		let list = await system.fetchURL("./index.json")
+
+		folders = JSON.parse(list).folders
+		for (const item in folders) {
+			system.folders.writeFolder(folders[item])
 		}
-		system.folders.writeFolder("/etc")
-		system.folders.writeFolder("/usr")
-		system.folders.writeFolder("/usr/lib")
-		system.folders.writeFolder("/usr/lib/systemc")
-		obj = await system.fetchURL("./systemC.js")
-		system.files.writeFile("/usr/lib/systemc/systemc.js", obj)
-		system.folders.writeFolder("/home")
+
+		files = JSON.parse(list).files
+		for (const item in files) {
+			obj = await system.fetchURL("." + files[item])
+			system.files.writeFile(files[item], obj)
+		}
 
 		system.log("Starting systemC...")
-		system.startProcess("systemC", "/usr/lib/systemc/systemc.js").then()
+		system.startProcess("systemC", "/usr/bin/systemc/systemc.js").then()
 		system.log("Beginning to run processes...")
 
 		system.input = document.getElementById('inputBox');
