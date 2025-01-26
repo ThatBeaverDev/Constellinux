@@ -1,2 +1,2 @@
-# Castorea
-Castorea is a weird little system.
+# Constellinux
+Constellinux is a weird little system.
