@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Constellinux Shell</title>
+        <link rel="stylesheet" href="/styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <style>
+            body {
+                overflow: hidden;
+                background-color: black;
+            }
+
+            p,h1 {
+                color: white;
+                font-family: "Source Code Pro", serif;
+                font-optical-sizing: auto;
+                font-weight: 450;
+                font-style: normal;
+                line-height: 0;
+                white-space: pre;
+            }
+
+            #log {
+                color: white;
+            }
+
+            #warn {
+                color: orange;
+            }
+
+            #error {
+                color: red;
+            }
+
+            #inputBox {
+                background-color: white;
+                width: 100%;
+                height: auto;
+            }
+
+            #gui {
+                width: 100vw;
+                height: 100vh;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+            }
+        </style>
+        <link href="/styles.css" rel="stylesheet">
+    </head>
+    <body style="background-color:black;">
+        <div id="mainHeader"></div>
+        <div id="logsBox" style="margin-top: 25px;"></div>
+        <p id="inputBox">hi</p>
+        <div id="gui"></div>
+    </body>
+<script src="/header.js"></script>
+<script id="kernel.js" src="./kernel.js"></script>
+</html>
