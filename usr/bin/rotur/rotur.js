@@ -2372,12 +2372,6 @@ class RoturExtension {
 
   system.rotur = new RoturExtension()
   
-  //await system.rotur.connectToServer("crl", "Constellinux", "ckv0.1")
-  //await new Promise(system.rotur.is_connected)
-  //await system.rotur.login("Constellinux", "ConstellinuxIsCool")
-  //await new Promise(system.rotur.authenticated && system.rotur.is_connected)
-  //system.log("Logged into Rotur!", "Rotur")  
-
 	function* awaitConnection() {
 		let i = 0
 		while (!system.rotur.connected()) {
@@ -2393,11 +2387,6 @@ class RoturExtension {
 			i++
 		}
 	}
-
-	//system.rotur.login("Constellinux", "ConstellinuxIsCool").then(resp => console.log(resp));
-	//awaitLogin()
-	//console.log("hi")
-
 	async function copy(text) {
 		try {
 		  await navigator.clipboard.writeText(text);
@@ -2413,7 +2402,7 @@ class RoturExtension {
 		}
 		if (!system.rotur.connected()) {
 			if (!system.rotur.isConnecting) {
-				system.rotur.connectToServer("crl", "Constellinux", "ckv0.1").then(resp => console.log(resp));
+				system.rotur.connectToServer("crl", "Constellinux", "ckv0.1")
 				system.rotur.isConnecting = true
 			}
 			setTimeout(() => {
@@ -2468,7 +2457,6 @@ async function frame() {
 			if (typeof resp == 'object"') {
 				resp = resp.join("\n")
 			}
-			console.log(resp)
 			resp = ["Response: " + resp]
 			system.rotur.sendMessage(JSON.stringify(resp), "SRE", packet.source, packet.origin)
 		} catch(e) {}
