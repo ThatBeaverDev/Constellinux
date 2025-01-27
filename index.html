@@ -11,58 +11,40 @@
         <meta property="og:description" content="Constellinux Shell is an online Shell, written in JS. It is where modern CRL is ran, and supports Rotur.">
         <meta property="og:image" content="https://thatbeaverdev.github.io/assets/Constellinux.jpeg">
         <style>
-            body {
-                overflow: hidden;
-                background-color: black;
-            }
-
-            p,h1 {
-                color: white;
+            #logsBox, #inputBox {
                 font-family: "Source Code Pro", serif;
                 font-optical-sizing: auto;
                 font-weight: 450;
                 font-style: normal;
-                line-height: 0;
                 white-space: pre;
+                margin-left: 25px;
+                margin-top: 25px;
             }
 
-            #log {
-                color: white;
-            }
-
-            #warn {
-                color: orange;
-            }
-
-            #error {
-                color: red;
-            }
+            #log, #warn, #error, #inputBox {margin-top: 0px; margin-bottom: 0px}
+            #log {color: white;}
+            #warn {color: orange;}
+            #error {color: red;}
 
             #inputBox {
-                background-color: white;
                 width: 100%;
                 height: auto;
-                margin-left: 25px;
             }
 
             #gui {
                 width: 100vw;
                 height: 100vh;
-                position: absolute;
+                /*position: absolute;*/
                 top: 0px;
                 left: 0px;
-            }
-
-            #logsBox {
-                margin-left: 25px;
             }
         </style>
         <link href="/styles.css" rel="stylesheet">
     </head>
     <div id="mainHeader"></div>
-    <body style="background-color:black;">
-        <div id="logsBox" style="margin-top: 25px;"></div>
-        <p id="inputBox">hi</p>
+    <body>
+        <div id="logsBox"></div>
+        <p id="inputBox">systemDefaultInputBoxText</p>
         <div id="gui"></div>
     </body>
 <script src="/header.js"></script>
