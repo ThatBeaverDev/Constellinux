@@ -3,6 +3,7 @@ async function kernel() {
 
 	system = {}
 	system.safe = false
+	system.forceSystemLog = true
 	system.processes = []
 	system.procCount = 0
 	system.dir = "/"
@@ -11,7 +12,8 @@ async function kernel() {
 	system.logsBox = document.getElementById("logsBox")
 	logHTML = document.getElementById("termLOG")
 	logsHTML = document.getElementById("logs")
-	system.log = function log(str, origin) {
+
+	system.log = function(str, origin) {
 		let text = str
 		if (typeof text !== "string") {
 			try {
@@ -30,16 +32,16 @@ async function kernel() {
 		for (const line in text) {
 			let element = document.createElement("p")
 			element.id = "log"
-            if (line == 0) {
-                element.innerText = (origin || Name) + ": " + text[line];
-            } else {
-                element.innerText = text[line]
-            }
+			if (line == 0) {
+				element.innerText = (origin || Name) + ": " + text[line];
+			} else {
+				element.innerText = text[line]
+			}
 			console.log(element.innerText)
 			system.logsBox.appendChild(element)
 		}
 	}
-	system.post = function post(str, origin) {
+	system.post = function(str, origin) {
 		system.lastPost = str
 		let text = str
 		if (typeof text !== "string") {
@@ -65,7 +67,7 @@ async function kernel() {
 		}
 	}
 
-	system.warn = function log(str, origin) {
+	system.warn = function(str, origin) {
 		let text = str
 		if (typeof text == "object") {
 			text = JSON.stringify(text)
@@ -73,10 +75,10 @@ async function kernel() {
 		let element = document.createElement("p")
 		element.id = "warn"
 		element.innerText = "[" + Date.now() + "] - " + (origin || Name) + ": " + text;
-		console.error(element.innerText)
+		console.warn(element.innerText)
 		system.logsBox.appendChild(element)
 	}
-	system.error = function log(str, origin) {
+	system.error = function(str, origin) {
 		let text = str
 		if (typeof text == "object") {
 			text = JSON.stringify(text)
@@ -95,20 +97,32 @@ async function kernel() {
 		return data;
 	}
 
-	system.cast = {}
-	system.cast.Objectify = function Objectify(obj) {
-		if (typeof obj === "object") { return obj; }
-		try { return(JSON.parse(obj)) } catch(e) {}
-		try { return(obj) } catch(e) {}
-	}
-	
-	system.cast.Stringify = function Stringify(str,beautify) {
-		if (typeof str === "object") { if (beautify) {return JSON.stringify(str,null,4);} else {return JSON.stringify(str);} }
-		return(String(str))
-	}
-
-
 	try {
+
+		system.cast = {}
+		system.cast.Objectify = function Objectify(obj) {
+			if (typeof obj === "object") {
+				return obj;
+			}
+			try {
+				return (JSON.parse(obj))
+			} catch (e) {}
+			try {
+				return (obj)
+			} catch (e) {}
+		}
+
+		system.cast.Stringify = function Stringify(str, beautify) {
+			if (typeof str === "object") {
+				if (beautify) {
+					return JSON.stringify(str, null, 4);
+				} else {
+					return JSON.stringify(str);
+				}
+			}
+			return (String(str))
+		}
+
 		// https://patorjk.com/software/taag/#p=display&h=0&f=Doom 
 		system.post(String(" _____                     _          _  _  _                     \n/  __ \\                   | |        | || |(_)                    \n| /  \\/  ___   _ __   ___ | |_   ___ | || | _  _ __   _   _ __  __\n| |     / _ \\ | '_ \\ / __|| __| / _ \\| || || || '_ \\ | | | |\\ \\/ /\n| \\__/\\| (_) || | | |\\__ \\| |_ |  __/| || || || | | || |_| | >  < \n \\____/ \\___/ |_| |_||___/ \\__| \\___||_||_||_||_| |_| \\__,_|/_/\\_\\"))
 		system.post(" ")
@@ -125,9 +139,14 @@ async function kernel() {
 			let obj = {}
 			let code
 			let type = String(dir).substring(String(dir).indexOf(".") + 1)
-			switch(type) {
+			switch (type) {
 				case "js":
 					code = system.files.get(dir)
+					if (system.forceSystemLog) {
+						code = code.replaceAll("console.log(", "system.log(")
+						code = code.replaceAll("console.warn(", "system.warn(")
+						code = code.replaceAll("console.error(", "system.error(")
+					}
 					break;
 				case "crl":
 					if (system.crl !== undefined) {
@@ -159,9 +178,9 @@ async function kernel() {
 
 		system.toDir = function toDir(dir) {
 			if (dir[0] == "/") {
-				return(dir)
+				return (dir)
 			} else {
-				return(system.dir + "/" + dir)
+				return (system.dir + "/" + dir)
 			}
 		}
 
@@ -251,9 +270,9 @@ async function kernel() {
 				if (location == "") {
 					location = "/"
 				}
-                if (location[location.length - 1] !== "/") {
-                    location += "/"
-                }
+				if (location[location.length - 1] !== "/") {
+					location += "/"
+				}
 				location += dir.substr(dir.lastIndexOf("/") + 1)
 				return Object.keys(system.folders[location].children)
 			} catch (e) {
@@ -286,6 +305,8 @@ async function kernel() {
 			system.folders.writeFolder(folders[item])
 		}
 
+		system.log("Writing Default Files...")
+
 		files = JSON.parse(list).files
 		for (const item in files) {
 			obj = await system.fetchURL("." + files[item])
@@ -310,7 +331,7 @@ async function kernel() {
 					temp = temp.slice(0, -1);
 					break;
 				case "Enter":
-					system.eval(system.inputText,system.dir + " % ")
+					system.eval(system.inputText, system.dir + " % ")
 					temp = ""
 					break;
 				case " ":
@@ -327,7 +348,7 @@ async function kernel() {
 			system.input.innerText = system.dir + " % " + system.inputText
 		});
 
-		system.eval = async function (code,pre) {
+		system.eval = async function(code, pre) {
 			system.post(pre + code)
 			let segments = String(code).split(" ")
 			if (system.files.get("/bin/" + segments[0] + ".js") == undefined) {
@@ -344,15 +365,15 @@ async function kernel() {
 
 			for (let i = 0; i < system.processes.length; i++) {
 				if (system.processes[i] !== undefined) {
-                    if (String(system.processes[i].code).includes("frame()")) {
+					if (String(system.processes[i].code).includes("frame()")) {
 						if (system.safe) {
 							eval(system.processes[i].code + "\ntry {frame() } catch(e) {  system.error(e, Name)  }")
 						} else {
 							eval(system.processes[i].code + "\nframe()")
 						}
-                    } else {
-                        system.stopProcess(i)
-                    }
+					} else {
+						system.stopProcess(i)
+					}
 				} else {}
 			}
 		}, 160);
