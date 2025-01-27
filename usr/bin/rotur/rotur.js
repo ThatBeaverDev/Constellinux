@@ -2457,7 +2457,7 @@ async function frame() {
 			if (typeof resp == 'object"') {
 				resp = resp.join("\n")
 			}
-			resp = ["Response: " + resp]
+			resp = ["Response: \n" + resp]
 			system.rotur.sendMessage(JSON.stringify(resp), "SRE", packet.source, packet.origin)
 		} catch(e) {}
 		
