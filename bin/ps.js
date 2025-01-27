@@ -1,7 +1,7 @@
 // list processes
 
 function init(args) {
-    let data = ""
+    let data = "PID - NAME\n"
     for (const i in system.processes) {
         try {
         const item = system.processes[i]
