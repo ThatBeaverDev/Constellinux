@@ -69574,9 +69574,6 @@ async function init() {
 				if (ABORT) return;
 				ensureInitRuntime();
 				preMain();
-				if (ENVIRONMENT_IS_WEB && preloadStartTime !== null) {
-					Module.printErr("pre-main prep time: " + (Date.now() - preloadStartTime) + " ms")
-				}
 				if (Module["onRuntimeInitialized"]) Module["onRuntimeInitialized"]();
 				if (Module["_main"] && shouldRunNow) Module["callMain"](args);
 				postRun()
