@@ -6,6 +6,7 @@
 
 function init() {
 	// Code to make windows draggable
+	system.constellinux.desktop = "cENVv0.1"
 
 	function dragElement(elmnt) {
 		var pos1 = 0,
