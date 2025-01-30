@@ -300,7 +300,7 @@ class RoturExtension {
   
 	async connectToServer(DESIGNATION, SYSTEM, VERSION) {
 	  if (!this.server || !this.accounts) {
-		system.log("Waiting for server and accounts...", "Rotur");
+		console.log("Waiting for server and accounts...");
 		setTimeout(() => {
 		  this.connectToServer(DESIGNATION, SYSTEM, VERSION);
 		}, 1000);
@@ -476,12 +476,12 @@ class RoturExtension {
 		  if (packet.listener == "link_cfg") {
 			this.client.room = packet.val;
 			this.is_connected = true;
-			system.log("Connected!", "Rotur");
+			console.log("Connected to Rotur! Enter 'rotur login' anad your details to login to rotur!");
 		  }
 		};
 	  };
 	  this.ws.onclose = () => {
-		system.log("Disconnected!", "Rotur");
+		console.log("Disconnected!");
 		this.is_connected = false;
 	  };
 	}
@@ -2371,38 +2371,23 @@ class RoturExtension {
   }
 
   system.rotur = new RoturExtension()
-  
-	function* awaitConnection() {
-		let i = 0
-		while (!system.rotur.connected()) {
-			yield i;
-			i++
-		}
-	}
+  system.constellinux.rotur = "v5"
 
-	function* awaitLogin() {
-		let i = 0
-		while (!system.rotur.loggedIn()) {
-			yield i;
-			i++
-		}
-	}
 	async function copy(text) {
 		try {
 		  await navigator.clipboard.writeText(text);
-		  system.log("copied '" + text + "' to clipboard.")
+		  console.log("copied '" + text + "' to clipboard.")
 		} catch (err) {
 		  console.error('Failed to copy: ', err);
 		}
 	  }
-
 	async function totalConnect() {
 		if (system.noRotur) {
 			return
 		}
 		if (!system.rotur.connected()) {
 			if (!system.rotur.isConnecting) {
-				system.rotur.connectToServer("crl", "Constellinux", "ckv0.1")
+				system.rotur.connectToServer("crl", "Constellinux", system.constellinux.constellinux)
 				system.rotur.isConnecting = true
 			}
 			setTimeout(() => {
@@ -2412,19 +2397,10 @@ class RoturExtension {
 		}
 		delete system.rotur.isConnecting
 		if (!system.rotur.loggedIn()) {
-			if (!system.rotur.isLoggingIn) {
-				let username = prompt("What is your Rotur Username?")
-				let blanks = ["", null, undefined]
-				if (blanks.includes(username)) {
-					system.noRotur = true
-					return
-				}
-				let password = prompt("What is your Rotur Password?")
-				if (blanks.includes(password)) {
-					system.noRotur = true
-					return
-				}
-				system.rotur.login(username, password)
+			if (!system.rotur.isLoggingIn && system.rotur.usr !== undefined) {
+				system.rotur.login(system.rotur.usr, system.rotur.pswd)
+				delete system.rotur.usr
+				delete system.rotur.pswd
 				system.rotur.isLoggingIn = true
 			}
 			setTimeout(() => {
@@ -2434,7 +2410,7 @@ class RoturExtension {
 		}
 		
 		delete system.rotur.isConnecting
-		system.log("Logged In As '" + system.rotur.client.username + "'", "Rotur")
+		console.log("Logged In As '" + system.rotur.client.username + "'")
 		copy(system.rotur.client.username)
 	}
 	totalConnect()
@@ -2449,7 +2425,6 @@ async function frame() {
 	for (const i in packets) {
 		try {
 			let packet = packets[i]
-			console.log(packet)
 			let data = system.cryptography.aesCtrDecrypt(packet.payload, system.rotur.getToken(), 256)
 			data = JSON.parse(data).cmd
 			await system.eval(data, "Rotur SRE Command Line: ")
