@@ -22,7 +22,9 @@
       "/usr/bin/cryptography/cryptography.js",
       "/bin/ps.js",
       "/bin/mkdir.js",
-      "/bin/touch.js"
+      "/bin/touch.js",
+      "/bin/constellinux.js",
+      "/bin/neofetch.js"
     ],
     "folders": [
         "/bin",

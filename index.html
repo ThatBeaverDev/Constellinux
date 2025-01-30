@@ -11,22 +11,29 @@
         <meta property="og:description" content="Constellinux Shell is an online Shell, written in JS. It is where modern CRL is ran, and supports Rotur.">
         <meta property="og:image" content="https://thatbeaverdev.github.io/assets/Constellinux.jpeg">
         <style>
-            #logsBox, #inputBox {
+            body {
+                user-select: none;
+            }
+            #logsBox, #input, #preInput {
                 font-family: "Source Code Pro", serif;
                 font-optical-sizing: auto;
                 font-weight: 450;
                 font-style: normal;
+                font-size: 16px;
                 white-space: pre;
-                margin-left: 25px;
                 margin-top: 25px;
             }
 
-            #log, #warn, #error, #inputBox {margin-top: 0px; margin-bottom: 0px}
+            #logsBox, #preInput {
+                margin-left: 25px;
+            }
+
+            #log, #warn, #error, #input, #preInput {margin-top: 0px; margin-bottom: 0px;}
             #log {color: white;}
             #warn {color: orange;}
             #error {color: red;}
 
-            #inputBox {
+            #input {
                 width: 100%;
                 height: auto;
             }
@@ -34,9 +41,25 @@
             #gui {
                 width: 100vw;
                 height: 100vh;
-                /*position: absolute;*/
                 top: 0px;
                 left: 0px;
+            }
+
+            #input {
+                width: 100%;
+                height: auto;
+                color: white;
+                background-color: rgba(0,0,0,0);
+                border: 0px;
+                left: 0px
+            }
+
+            #input:focus {
+                outline: none;
+            }
+
+            yellow {
+                color: yellow;
             }
         </style>
         <link href="/styles.css" rel="stylesheet">
@@ -44,9 +67,23 @@
     <div id="mainHeader"></div>
     <body>
         <div id="logsBox"></div>
-        <p id="inputBox">systemDefaultInputBoxText</p>
-        <div id="gui"></div>
+        <!--<p id="inputBox">systemDefaultInputBoxText</p>-->
+        <div style="display: flex; justify-content: space-around">
+        <p id="preInput">whar</p>
+            <input type="text" id="input" onkeypress="search(event)">
+        </div>
+       <div id="gui"></div>
     </body>
+<script>
+    function search(event) {
+        let value = event.which;
+        if(value === 13){
+            event.preventDefault();
+            system.eval(system.input.value, system.dir + " % ")
+            system.input.value = ""
+        }
+        }
+</script>
 <script src="/header.js"></script>
 <script id="kernel.js" src="./kernel.js"></script>
 </html>

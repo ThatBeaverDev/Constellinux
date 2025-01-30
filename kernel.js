@@ -1,7 +1,7 @@
 async function kernel() {
 	let Name = "Kernel"
 
-	system = {}
+	system = {startTime: Date.now()}
 	system.safe = false
 	system.forceSystemLog = true
 	system.processes = []
@@ -9,85 +9,48 @@ async function kernel() {
 	system.dir = "/"
 
 	system.inputText = ""
+	system.constellinux = {constellinux: "ckv0.1"}
+	system.constellinux.terminal = system.constellinux.constellinux
 	system.logsBox = document.getElementById("logsBox")
+	system.logs = []
 	logHTML = document.getElementById("termLOG")
 	logsHTML = document.getElementById("logs")
 
-	system.log = function(str, origin) {
-		let text = str
-		if (typeof text !== "string") {
-			try {
-				text = JSON.stringify(text)
-			} catch (e) {
-				text = String(text)
-			}
+	system.refreshLogsPanel = function() {
+		let data = ""
+		for (const i in system.logs) {
+			let temp = "<p id='" + system.logs[i].type + "'>"
+			temp += system.logs[i].content
+			temp += "</p>"
+			data += temp
 		}
-		if (text == undefined) {
-			text = ""
-		}
-		text = text.split("\n")
-		if (text.length == 0) {
-			text = ["yes"]
-		}
-		for (const line in text) {
-			let element = document.createElement("p")
-			element.id = "log"
-			if (line == 0) {
-				element.innerText = (origin || Name) + ": " + text[line];
-			} else {
-				element.innerText = text[line]
-			}
-			console.log(element.innerText)
-			system.logsBox.appendChild(element)
-		}
+		system.logsBox.innerHTML = data
 	}
-	system.post = function(str, origin) {
-		system.lastPost = str
-		let text = str
-		if (typeof text !== "string") {
-			try {
-				text = JSON.stringify(text)
-			} catch (e) {
-				text = String(text)
-			}
-		}
-		if (text == undefined) {
-			text = ""
-		}
-		text = text.split("\n")
-		if (text.length == 0) {
-			text = ["yes"]
-		}
-		for (const line in text) {
-			let element = document.createElement("p")
-			element.id = "log"
-			element.innerText = text[line]
-			console.log(element.innerText)
-			system.logsBox.appendChild(element)
-		}
+	
+	system.log = function(origin, str) {
+		let obj = {type: "log", content: (origin || Name) + ": " +  system.cast.Stringify(str)}
+		system.logs.push(obj)
+		console.log(system.logs[system.logs.length - 1].content)
+		system.refreshLogsPanel()
+	}
+	system.post = function(str) {
+		let obj = {type: "log", content: system.cast.Stringify(str)}
+		system.logs.push(obj)
+		console.log(system.logs[system.logs.length - 1].content)
+		system.refreshLogsPanel()
 	}
 
-	system.warn = function(str, origin) {
-		let text = str
-		if (typeof text == "object") {
-			text = JSON.stringify(text)
-		}
-		let element = document.createElement("p")
-		element.id = "warn"
-		element.innerText = "[" + Date.now() + "] - " + (origin || Name) + ": " + text;
-		console.warn(element.innerText)
-		system.logsBox.appendChild(element)
+	system.warn = function(origin, str) {
+		let obj = {type: "warn", content: (origin || Name) + ": " +  system.cast.Stringify(str)}
+		system.logs.push(obj)
+		console.warn(system.logs[system.logs.length - 1].content)
+		system.refreshLogsPanel()
 	}
-	system.error = function(str, origin) {
-		let text = str
-		if (typeof text == "object") {
-			text = JSON.stringify(text)
-		}
-		let element = document.createElement("p")
-		element.id = "error"
-		element.innerText = "[" + Date.now() + "] - " + (origin || Name) + ": " + text;
-		console.error(element.innerText)
-		system.logsBox.appendChild(element)
+	system.error = function(origin, str) {
+		let obj = {type: "error", content: (origin || Name) + ": " +  system.cast.Stringify(str)}
+		system.logs.push(obj)
+		console.error(system.logs[system.logs.length - 1].content)
+		system.refreshLogsPanel()
 	}
 
 	system.fetchURL = async function fetchURL(url) {
@@ -123,18 +86,18 @@ async function kernel() {
 			return (String(str))
 		}
 
-		// https://patorjk.com/software/taag/#p=display&h=0&f=Doom 
+		// https://patorjk.com/software/taag/#p=display&h=0&f=Doom&t=Constellinux 
 		system.post(String(" _____                     _          _  _  _                     \n/  __ \\                   | |        | || |(_)                    \n| /  \\/  ___   _ __   ___ | |_   ___ | || | _  _ __   _   _ __  __\n| |     / _ \\ | '_ \\ / __|| __| / _ \\| || || || '_ \\ | | | |\\ \\/ /\n| \\__/\\| (_) || | | |\\__ \\| |_ |  __/| || || || | | || |_| | >  < \n \\____/ \\___/ |_| |_||___/ \\__| \\___||_||_||_||_| |_| \\__,_|/_/\\_\\"))
 		system.post(" ")
 
-		system.log("Starting JS Engine...")
+		system.log("[ABSTRACT]/kernel.js","Starting JS Engine...")
 
 		system.startProcess = async function(dir, args) {
 			if (system.files.get(dir) == undefined) {
 				return
 			}
 			system.preScript = "const PID = " + system.procCount + ";\n"
-			system.preScript += "const Name = '" + name + "';\n"
+			system.preScript += "const Name = '" + dir + "';\n"
 			system.preScript += "const args = JSON.parse('" + JSON.stringify((args || [])) + "');\n"
 			let obj = {}
 			let code
@@ -143,9 +106,9 @@ async function kernel() {
 				case "js":
 					code = system.files.get(dir)
 					if (system.forceSystemLog) {
-						code = code.replaceAll("console.log(", "system.log(")
-						code = code.replaceAll("console.warn(", "system.warn(")
-						code = code.replaceAll("console.error(", "system.error(")
+						code = code.replaceAll("console.log(", "system.log(Name,")
+						code = code.replaceAll("console.warn(", "system.warn(Name,")
+						code = code.replaceAll("console.error(", "system.error(Name,")
 					}
 					break;
 				case "crl":
@@ -186,7 +149,7 @@ async function kernel() {
 
 
 		// START FILESYSTEM
-		system.log("Registering Drive Functions.")
+		system.log("[ABSTRACT]/kernel.js","Registering Drive Functions.")
 		system.folders = {}
 		let obj = {}
 		obj.children = {}
@@ -296,7 +259,7 @@ async function kernel() {
 			}
 		}
 
-		system.log("Creating Basic Directories...")
+		system.log("[ABSTRACT]/kernel.js","Creating Basic Directories...")
 
 		let list = await system.fetchURL("./index.json")
 
@@ -305,7 +268,7 @@ async function kernel() {
 			system.folders.writeFolder(folders[item])
 		}
 
-		system.log("Writing Default Files...")
+		system.log("[ABSTRACT]/kernel.js","Writing Default Files...")
 
 		files = JSON.parse(list).files
 		for (const item in files) {
@@ -313,46 +276,51 @@ async function kernel() {
 			system.files.writeFile(files[item], obj)
 		}
 
-		system.log("Starting systemC...")
+		system.log("[ABSTRACT]/kernel.js","Starting systemC...")
 		system.startProcess("/usr/bin/systemc/systemC.js").then()
 		if (!system.systemC) {
 			system.error("systemC not running.")
 			return
 		}
-		system.log("Beginning to run processes...")
+		system.log("[ABSTRACT]/kernel.js","Beginning to run processes...")
 
-		system.input = document.getElementById('inputBox');
-		system.input.innerText = system.dir + " % " + system.inputText
+		system.input = document.getElementById('input');
+		system.input.focus()
+		system.preInput = document.getElementById('preInput');
+		system.preInput.innerText = system.dir + " % " + system.inputText
+
 		// INPUT
+		system.keys = {}
 		document.addEventListener('keydown', (e) => {
+			system.keys[e.key] = true
+			if(e.keyCode == 32 && e.target == document.body) {
+				e.preventDefault();
+			}
 			let temp = String(system.inputText)
-			switch (e.key) {
-				case "Backspace":
-					temp = temp.slice(0, -1);
-					break;
-				case "Enter":
-					system.eval(system.inputText, system.dir + " % ")
-					temp = ""
-					break;
-				case " ":
-					temp = temp + " s";
-					temp = temp.slice(0, -1);
-					break;
-				default:
-					let keys = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@£$%^&*()§±-_=+;:'\"\\|`~,~,<.>/?1234567890¡€#¢∞§¶•ªº–≠œ∑´®†¥¨^øπ“‘åƒ©˙∆˚¬…æ«`Ω≈ç√∫~µ≤≥÷⁄™‹›ﬁﬂ‡°·‚—±Œ„‰ÂÊÁËÈØ∏”’ÅÍÎÏÌÓÔÒÚÆ»ŸÛÙÇ◊ıˆ˜¯˘¿"
-					if (keys.includes(e.key)) {
-						temp += e.key;
-					}
-			};
-			system.inputText = temp
+			let cmdKey = "Control"
+			if (navigator.userAgentData.platform == "macOS") {
+				cmdKey = "Meta"
+			}
+			if (system.keys[cmdKey]) {
+				switch(e.key) {
+					//case "r":
+					//	e.preventDefault();
+					//	break;
+				}
+				return
+			}
 			system.input.innerText = system.dir + " % " + system.inputText
 		});
+
+		document.addEventListener('keyup', (e) => {
+			system.keys[e.key] = false
+		})
 
 		system.eval = async function(code, pre) {
 			system.post(pre + code)
 			let segments = String(code).split(" ")
 			if (system.files.get("/bin/" + segments[0] + ".js") == undefined) {
-				system.log("command not found:  " + segments[0])
+				system.log("[ABSTRACT]/kernel.js","command not found:  " + segments[0])
 			} else {
 				system.startProcess("/bin/" + segments[0] + ".js", segments.slice(1))
 			}
@@ -361,8 +329,7 @@ async function kernel() {
 
 
 		var runtime = setInterval(function() {
-
-
+			system.input.focus()
 			for (let i = 0; i < system.processes.length; i++) {
 				if (system.processes[i] !== undefined) {
 					if (String(system.processes[i].code).includes("frame()")) {
