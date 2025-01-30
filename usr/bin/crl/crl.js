@@ -97,7 +97,7 @@ function compileToken(token) {
                 try {return JSON.parse(token.data)} catch(e) {  system.warn("Cannot Parse Array to Object: " + token.data, "compileCRL")  }
             }
         default:
-            system.log("CRL Compiler: Unknown Token Type and Data: " + token.type + " and " + token.data)
+            console.log("Unknown Token Type and Data: " + token.type + " and " + token.data)
             return token.data
     }
 }
