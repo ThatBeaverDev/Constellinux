@@ -1,11 +1,12 @@
 // systemC
 
 function init() {
-    system.log("SystemC Found and Running.", "systemC")
+    console.log("SystemC Found and Running.")
     system.systemC = true
+    system.constellinux.systemC = "v1"
     var config = system.files.get("/etc/systemc.json")
     if (config === undefined) {
-        system.log("no systemC config file found. creating one.","systemC")
+        console.log("no systemC config file found. creating one.")
         let obj = {}
         obj.creation = Date.now()
         obj.services = []
@@ -15,7 +16,7 @@ function init() {
         obj.services.push("/usr/bin/rotur/rotur.js")
         obj.services.push("/usr/bin/welcome/welcome.js")
         system.files.writeFile("/etc/systemc.json",JSON.stringify(obj))
-        system.log("Created blank systemC config file at /etc/systemc.json","systemC")
+        console.log("Created blank systemC config file at /etc/systemc.json")
     }
     let services = JSON.parse(system.files.get("/etc/systemc.json")).services
     for (const i in services) {
