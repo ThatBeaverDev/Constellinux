@@ -476,7 +476,7 @@ class RoturExtension {
 		  if (packet.listener == "link_cfg") {
 			this.client.room = packet.val;
 			this.is_connected = true;
-			console.log("Connected to Rotur! Enter 'rotur login' anad your details to login to rotur!");
+			console.log("Connected to Rotur! Enter 'rotur login' and your details to login to rotur!");
 		  }
 		};
 	  };
@@ -1121,19 +1121,19 @@ class RoturExtension {
 		console.error("Unable to send message: Not Connected");
 		return "";
 	  }
-	  this.ws.send(
-		JSON.stringify({
-		  cmd: "pmsg",
-		  val: {
-			client: this.my_client,
-			payload: PAYLOAD,
-			source: SOURCE,
-			target: TARGET,
-			timestamp: Date.now(),
-		  },
-		  id: USER,
-		}),
-	  );
+		this.ws.send(
+			JSON.stringify({
+			cmd: "pmsg",
+			val: {
+				client: this.my_client,
+				payload: PAYLOAD,
+				source: SOURCE,
+				target: TARGET,
+				timestamp: Date.now(),
+			},
+			id: USER,
+			}),
+		);
 	}
   
 	whenMessageReceived() {
@@ -1927,8 +1927,8 @@ class RoturExtension {
 		  }
 		};
 		this.ws.addEventListener("message", handleItemDataResponse);
-	  });
-	}
+	});
+}
   
 	purchaseItem(args) {
 	  if (!this.is_connected) {
@@ -2373,14 +2373,6 @@ class RoturExtension {
   system.rotur = new RoturExtension()
   system.constellinux.rotur = "v5"
 
-	async function copy(text) {
-		try {
-		  await navigator.clipboard.writeText(text);
-		  console.log("copied '" + text + "' to clipboard.")
-		} catch (err) {
-		  console.error('Failed to copy: ', err);
-		}
-	  }
 	async function totalConnect() {
 		if (system.noRotur) {
 			return
@@ -2411,7 +2403,6 @@ class RoturExtension {
 		
 		delete system.rotur.isConnecting
 		console.log("Logged In As '" + system.rotur.client.username + "'")
-		copy(system.rotur.client.username)
 	}
 	totalConnect()
 }
@@ -2428,7 +2419,7 @@ async function frame() {
 			let data = system.cryptography.aesCtrDecrypt(packet.payload, system.rotur.getToken(), 256)
 			data = JSON.parse(data).cmd
 			await system.eval(data, "Rotur SRE Command Line: ")
-			let resp = system.lastPost
+			let resp = system.logs[system.logs.length - 1].content
 			if (typeof resp == 'object"') {
 				resp = resp.join("\n")
 			}
