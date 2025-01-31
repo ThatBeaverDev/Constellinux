@@ -31,48 +31,50 @@ async function init() {
     for (const i in icon) {
         let key = ""
         let val = ""
-        let toAdd
-        switch(String(i)) {
-            case "1":
-                toAdd = "<green>Constellinux</green>"
-                break;
-            case "2":
-                toAdd = "-------------------"
-                break;
-            case "4":
-                key = 'Host OS'
-                val = navigator.userAgentData.platform
-                break;
-            case "5":
-                key = "Kernel"
-                val = system.constellinux.constellinux
-                break;
-            case "6":
-                let time = convertMiliseconds(Date.now() - system.startTime)
-                key = "Uptime"
-                val = time.d + " Days, " + time.h + " Hours, " + time.m + " Minutes."
-                break;
-            case "9":
-                key = "Resolution"
-                val = window.innerWidth + "x" + window.innerHeight
-                break;
-            case "10":
-                key = "DE"
-                val = system.constellinux.desktop
-                break;
-            case "12":
-                key = "Terminal"
-                val = system.constellinux.terminal
-                break;
-            case "14":
-                key = "CPU Cores"
-                val = navigator.hardwareConcurrency
-                break;
-            case "16":
-                key = "JS Heap (Memory)"
-                val =  Math.round(performance.memory.totalJSHeapSize / 8388608) + "MiB / " + Math.round(performance.memory.jsHeapSizeLimit / 8388608) + "MiB"
-        }
-        if (toAdd == undefined) {
+        let toAdd = ""
+        try {
+            switch(String(i)) {
+                case "1":
+                    toAdd = "<green>Constellinux</green>"
+                    break;
+                case "2":
+                    toAdd = "-------------------"
+                    break;
+                case "4":
+                    key = 'Host OS'
+                    val = navigator.userAgentData.platform
+                    break;
+                case "5":
+                    key = "Kernel"
+                    val = system.constellinux.constellinux
+                    break;
+                case "6":
+                    let time = convertMiliseconds(Date.now() - system.startTime)
+                    key = "Uptime"
+                    val = time.d + " Days, " + time.h + " Hours, " + time.m + " Minutes."
+                    break;
+                case "9":
+                    key = "Resolution"
+                    val = window.innerWidth + "x" + window.innerHeight
+                    break;
+                case "10":
+                    key = "DE"
+                    val = system.constellinux.desktop
+                    break;
+                case "12":
+                    key = "Terminal"
+                    val = system.constellinux.terminal
+                    break;
+                case "14":
+                    key = "CPU Cores"
+                    val = navigator.hardwareConcurrency
+                    break;
+                case "16":
+                    key = "JS Heap (Memory)"
+                    val =  Math.round(performance.memory.totalJSHeapSize / 8388608) + "MiB / " + Math.round(performance.memory.jsHeapSizeLimit / 8388608) + "MiB"
+            }
+        } catch(e) {}
+        if (toAdd == "") {
             if (key !== "") {
                 icon[i] = icon[i] + "<yellow>" + key + ": " + "</yellow>" + val
             }
