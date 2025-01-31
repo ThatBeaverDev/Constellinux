@@ -105,7 +105,7 @@ function compileToken(token) {
 function init(args) {
     // Define Functions and Locations
     system.crl = {}
-    system.startProcess("crlAstGen","/usr/bin/crl/astGen.js")
+    system.startProcess("/usr/bin/crl/astGen.js")
     system.crl.compile = function compile(code) {
         system.crl.result = "let temp\nlet VARIABLES = system.processes[PID].variables\n"
         let ast = system.crl.generateAST(code)
