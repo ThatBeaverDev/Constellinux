@@ -43,6 +43,10 @@
                 height: 100vh;
                 top: 0px;
                 left: 0px;
+                position: absolute;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
             }
 
             #input {
@@ -69,7 +73,7 @@
         <div id="logsBox"></div>
         <!--<p id="inputBox">systemDefaultInputBoxText</p>-->
         <div style="display: flex; justify-content: space-around">
-        <p id="preInput">whar</p>
+        <p id="preInput">system is loading. if this text persists with no logs, the system may have crashed.</p>
             <input type="text" id="input" onkeypress="search(event)">
         </div>
        <div id="gui"></div>

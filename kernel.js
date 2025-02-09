@@ -1,5 +1,6 @@
 async function kernel() {
-	let Name = "Kernel"
+	const Name = "[ABSTRACT]/kernel.js"
+	const PID = -1
 
 	system = {startTime: Date.now()}
 	system.safe = false
@@ -27,6 +28,30 @@ async function kernel() {
 		system.logsBox.innerHTML = data
 	}
 	
+	system.cast = {}
+	system.cast.Objectify = function Objectify(obj) {
+		if (typeof obj === "object") {
+			return obj;
+		}
+		try {
+			return (JSON.parse(obj))
+		} catch (e) {}
+		try {
+			return (obj)
+		} catch (e) {}
+	}
+
+	system.cast.Stringify = function Stringify(str, beautify) {
+		if (typeof str === "object") {
+			if (beautify) {
+				return JSON.stringify(str, null, 4);
+			} else {
+				return JSON.stringify(str);
+			}
+		}
+		return (String(str))
+	}
+
 	system.log = function(origin, str) {
 		let obj = {type: "log", content: (origin || Name) + ": " +  system.cast.Stringify(str)}
 		system.logs.push(obj)
@@ -61,64 +86,58 @@ async function kernel() {
 	}
 
 	try {
-
-		system.cast = {}
-		system.cast.Objectify = function Objectify(obj) {
-			if (typeof obj === "object") {
-				return obj;
-			}
-			try {
-				return (JSON.parse(obj))
-			} catch (e) {}
-			try {
-				return (obj)
-			} catch (e) {}
-		}
-
-		system.cast.Stringify = function Stringify(str, beautify) {
-			if (typeof str === "object") {
-				if (beautify) {
-					return JSON.stringify(str, null, 4);
-				} else {
-					return JSON.stringify(str);
-				}
-			}
-			return (String(str))
-		}
-
 		// https://patorjk.com/software/taag/#p=display&h=0&f=Doom&t=Constellinux 
 		system.post(String(" _____                     _          _  _  _                     \n/  __ \\                   | |        | || |(_)                    \n| /  \\/  ___   _ __   ___ | |_   ___ | || | _  _ __   _   _ __  __\n| |     / _ \\ | '_ \\ / __|| __| / _ \\| || || || '_ \\ | | | |\\ \\/ /\n| \\__/\\| (_) || | | |\\__ \\| |_ |  __/| || || || | | || |_| | >  < \n \\____/ \\___/ |_| |_||___/ \\__| \\___||_||_||_||_| |_| \\__,_|/_/\\_\\"))
 		system.post(" ")
 
-		system.log("[ABSTRACT]/kernel.js","Starting JS Engine...")
+		system.log(Name,"Starting JS Engine...")
+
+		system.languages = {}
+		system.langBackend = {}
+		system.languages.js = function (dir) {
+			let code = system.files.get(dir)
+			if (system.forceSystemLog) {
+				code = code.replaceAll("console.log(", "system.log(Name,")
+				code = code.replaceAll("console.warn(", "system.warn(Name,")
+				code = code.replaceAll("console.error(", "system.error(Name,")
+			}
+			return code
+		}
+
+		system.extend = function (pre, text) {
+			let txt = String(text.replaceAll("\n","\n ")).split("(")
+			let result = ""
+
+			for (const i in txt) {
+				let item = txt[i]
+				if (Number(i) !== txt.length - 1) {
+					if (item[item.length - 1] !== " ") {
+						let tmp = item.split(" ").reverse()
+						let post = tmp.splice(0,1)[0]
+						let prea = tmp.reverse().join(" ")
+						
+						result += prea + " " + pre + "." + post + "("
+					} else {
+						result += item + "("
+					}
+				} else {
+					result += item
+				}
+			}
+			return result
+		}
 
 		system.startProcess = async function(dir, args) {
 			if (system.files.get(dir) == undefined) {
 				return
 			}
-			system.preScript = "const PID = " + system.procCount + ";\n"
-			system.preScript += "const Name = '" + dir + "';\n"
-			system.preScript += "const args = JSON.parse('" + JSON.stringify((args || [])) + "');\n"
+			system.preScript = "const PID = " + system.procCount + ";"
+			system.preScript += "const Name = '" + dir + "';"
+			system.preScript += "const args = JSON.parse('" + JSON.stringify((args || [])) + "');"
 			let obj = {}
 			let code
 			let type = String(dir).substring(String(dir).indexOf(".") + 1)
-			switch (type) {
-				case "js":
-					code = system.files.get(dir)
-					if (system.forceSystemLog) {
-						code = code.replaceAll("console.log(", "system.log(Name,")
-						code = code.replaceAll("console.warn(", "system.warn(Name,")
-						code = code.replaceAll("console.error(", "system.error(Name,")
-					}
-					break;
-				case "crl":
-					if (system.crl !== undefined) {
-						code = system.crl.compile(system.files.get(dir))
-					} else {
-						system.error("CRL system not initialised")
-					}
-					break;
-			}
+			code = system.languages[type](dir)
 			code = system.preScript + code
 			obj.code = code
 			obj.args = args
@@ -149,9 +168,9 @@ async function kernel() {
 
 
 		// START FILESYSTEM
-		system.log("[ABSTRACT]/kernel.js","Registering Drive Functions.")
+		system.log(Name,"Registering Drive Functions.")
 		system.folders = {}
-		let obj = {}
+		obj = {}
 		obj.children = {}
 		system.folders["/"] = obj
 		system.files = {}
@@ -259,7 +278,7 @@ async function kernel() {
 			}
 		}
 
-		system.log("[ABSTRACT]/kernel.js","Creating Basic Directories...")
+		system.log(Name,"Creating Basic Directories...")
 
 		let list = await system.fetchURL("./index.json")
 
@@ -268,7 +287,7 @@ async function kernel() {
 			system.folders.writeFolder(folders[item])
 		}
 
-		system.log("[ABSTRACT]/kernel.js","Writing Default Files...")
+		system.log(Name,"Writing Default Files...")
 
 		files = JSON.parse(list).files
 		for (const item in files) {
@@ -276,13 +295,13 @@ async function kernel() {
 			system.files.writeFile(files[item], obj)
 		}
 
-		system.log("[ABSTRACT]/kernel.js","Starting systemC...")
+		system.log(Name,"Starting systemC...")
 		system.startProcess("/usr/bin/systemc/systemC.js").then()
 		if (!system.systemC) {
 			system.error("systemC not running.")
 			return
 		}
-		system.log("[ABSTRACT]/kernel.js","Beginning to run processes...")
+		system.log(Name,"Beginning to run processes...")
 
 		system.input = document.getElementById('input');
 		system.input.focus()
@@ -320,7 +339,8 @@ async function kernel() {
 			system.post(pre + code)
 			let segments = String(code).split(" ")
 			if (system.files.get("/bin/" + segments[0] + ".js") == undefined) {
-				system.log("[ABSTRACT]/kernel.js","command not found:  " + segments[0])
+				//system.log(Name,"command not found:  " + segments[0])
+				system.post(eval(code))
 			} else {
 				system.startProcess("/bin/" + segments[0] + ".js", segments.slice(1))
 			}
@@ -349,4 +369,4 @@ async function kernel() {
 	}
 }
 
-kernel().then()
+kernel()

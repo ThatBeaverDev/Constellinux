@@ -75,7 +75,10 @@ function init() {
 		top.id = "windowForPid:" + PID + "top"
 		top.style = "height: 25px; background-color: grey; overflow: hidden;"
 		top.innerHTML = "<p>Window For " + PID + "</p>"
+		console.log(top.innerHTML)
 		element.appendChild(top)
+		top = document.getElementById("windowForPid:" + PID + "top")
+		top.appendChild(close)
 		let internals = document.createElement("div")
 		internals.id = "windowForPid:" + PID + "contents"
 		internals.style = "width: max; height: 100%; min-height: 50px; overflow: hidden;"
@@ -95,4 +98,5 @@ function init() {
 	}
 }
 
-function frame() {}
+async function frame() {
+}

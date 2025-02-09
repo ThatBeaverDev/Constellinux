@@ -14,9 +14,7 @@
       "/usr/bin/systemc/systemC.js",
       "/usr/bin/crl/crl.js",
       "/usr/bin/desktopEnv/desktopEnv.js",
-      "/bin/rotur.js",
       "/usr/bin/crl/astGen.js",
-      "/usr/bin/rotur/rotur.js",
       "/bin/wget.js",
       "/bin/iframe.js",
       "/usr/bin/cryptography/cryptography.js",
@@ -24,7 +22,9 @@
       "/bin/mkdir.js",
       "/bin/touch.js",
       "/bin/constellinux.js",
-      "/bin/neofetch.js"
+      "/bin/neofetch.js",
+      "/temp.crl",
+      "/bin/rn.js"
     ],
     "folders": [
         "/bin",
@@ -34,7 +34,6 @@
         "/usr/bin/crl",
         "/usr/bin/systemc",
         "/usr/bin/desktopEnv",
-        "/usr/bin/rotur",
         "/home",
         "/usr/bin/cryptography"
     ]

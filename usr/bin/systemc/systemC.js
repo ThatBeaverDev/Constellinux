@@ -13,7 +13,6 @@ function init() {
         obj.services.push("/usr/bin/crl/crl.js")
         obj.services.push("/usr/bin/desktopEnv/desktopEnv.js")
         obj.services.push("/usr/bin/cryptography/cryptography.js")
-        obj.services.push("/usr/bin/rotur/rotur.js")
         obj.services.push("/usr/bin/welcome/welcome.js")
         system.files.writeFile("/etc/systemc.json",JSON.stringify(obj))
         console.log("Created blank systemC config file at /etc/systemc.json")
